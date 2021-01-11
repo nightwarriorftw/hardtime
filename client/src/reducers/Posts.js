@@ -1,19 +1,13 @@
-const initialState = {
-    events: [],
-};
-
-const Posts = (state = initialState, action) => {
+const Posts = (state = [], action) => {
   switch (action.type) {
     case "FETCH_ALL":
-      return action.payload;      
+      return action.payload;
 
     case "CREATE":
-      return state;
-
+      return [...state, action.payload];
 
     default:
       return state;
-
   }
 };
 
