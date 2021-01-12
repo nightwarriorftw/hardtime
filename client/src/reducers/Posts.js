@@ -6,6 +6,9 @@ const Posts = (state = [], action) => {
     case "CREATE":
       return [...state, action.payload];
 
+    case "UPDATE":
+      return state.map(post => post._id === action.payload._id ? action.payload : post);
+
     default:
       return state;
   }

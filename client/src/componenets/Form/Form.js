@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useStyles from "./styles";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
 import FileBase from "react-file-base64";
-import { createPost } from "../../actions/Posts";
+import { createPost, updatePost } from "../../actions/Posts";
 
-const Form = () => {
+const Form = ({ currentId, setCurrentId }) => {
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
+  const dispatch = useDispatch();
   const [postData, setPostData] = useState({
     creator: "",
     tags: "",
@@ -13,17 +17,33 @@ const Form = () => {
     title: "",
     selectedFile: "",
   });
-  // onChange = {(e) => setPostData({...postData, creator: e.target.value})}
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (post) setPostData(post);
+  }, [post]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createPost(postData));
-    
+
+    if (currentId) {
+      dispatch(updatePost(currentId, postData));
+      clear();
+    } else {
+      dispatch(createPost(postData));
+      clear();
+    }
   };
 
-  const clear = () => {};
+  const clear = () => {
+    setCurrentId(null);
+    setPostData({
+      creator: "",
+      tags: "",
+      message: "",
+      title: "",
+      selectedFile: "",
+    });
+  };
 
   const classes = useStyles();
   return (
@@ -34,7 +54,9 @@ const Form = () => {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Hard Time ? Create a Memory</Typography>
+        <Typography variant="h6">
+          Hard Time ? {currentId ? "Update" : "Create"} a Memory
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
