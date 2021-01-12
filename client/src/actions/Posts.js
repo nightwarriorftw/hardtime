@@ -21,7 +21,7 @@ export const createPost = (post) => async (dispatch) => {
 export const updatePost = (id, updatedPost) => async (dispatch) => {
   try {
     const { data } = await api.updatePost(id, updatedPost);
-    dispatch({ type: "UPDATE", paylaod: data });
+    dispatch({ type: "UPDATE", payload: data });
   } catch (error) {
     console.log(error);
   }
